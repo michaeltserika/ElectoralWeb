@@ -133,8 +133,8 @@
     </nav>
 
     <div class="sidebar collapse d-lg-block" id="sidebarCollapse">
-        <a href="{{ route('dashboard') }}" class="fw-bold">
-            <i class="bi bi-twitter nav-icon"></i> Élections
+        <a href="{{ route('home') }}" class="fw-bold">
+            <i class="bi bi-twitter nav-icon"></i> Élections Sociales
         </a>
         <div class="mt-3 mb-3">
             <form action="{{ route('elections.search') }}" method="GET">
@@ -145,25 +145,46 @@
             <i class="bi bi-house-door nav-icon"></i> Tableau de Bord
         </a>
         <a href="{{ route('elections.index') }}">
-            <i class="bi bi-list-ul nav-icon"></i> Voir les élections
+            <i class="bi bi-list-ul nav-icon"></i> Liste des élections
         </a>
         @auth
             @if (auth()->user()->role === 'ADMIN')
                 <a href="{{ route('elections.create') }}">
                     <i class="bi bi-plus-square nav-icon"></i> Créer une élection
                 </a>
-                @php $firstElection = \App\Models\Election::first(); @endphp
-                @if ($firstElection)
-                    <a href="{{ route('candidats.create', $firstElection->id_election) }}">
-                        <i class="bi bi-person-plus nav-icon"></i> Créer un candidat
-                    </a>
-                @endif
             @endif
-            @php $firstElection = \App\Models\Election::first(); @endphp
-            @if ($firstElection)
-                <a href="{{ route('votes.create', $firstElection->id_election) }}">
-                    <i class="bi bi-check2-square nav-icon"></i> Voter
-                </a>
+            <!-- Menu déroulant pour les élections existantes -->
+            @php $elections = \App\Models\Election::all(); @endphp
+            @if ($elections->isNotEmpty())
+                <div class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-person-lines-fill nav-icon"></i> Gestion des candidats
+                    </a>
+                    <ul class="dropdown-menu" style="background-color: {{ session('theme', 'dark') == 'dark' ? '#192734' : '#fff' }}; color: {{ session('theme', 'dark') == 'dark' ? '#e7e9ea' : '#0f1419' }};">
+                        @foreach ($elections as $election)
+                            <li><a class="dropdown-item" href="{{ route('candidats.index', $election->id_election) }}">{{ $election->titre }} - Voir candidats</a></li>
+                            @if (auth()->user()->role === 'ADMIN')
+                                <li><a class="dropdown-item" href="{{ route('candidats.create', $election->id_election) }}">{{ $election->titre }} - Ajouter candidat</a></li>
+                            @endif
+                        @endforeach
+                    </ul>
+                </div>
+                <div class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-check2-square nav-icon"></i> Gestion des votes
+                    </a>
+                    <ul class="dropdown-menu" style="background-color: {{ session('theme', 'dark') == 'dark' ? '#192734' : '#fff' }}; color: {{ session('theme', 'dark') == 'dark' ? '#e7e9ea' : '#0f1419' }};">
+                        @foreach ($elections as $election)
+                            <li><a class="dropdown-item" href="{{ route('votes.create', $election->id_election) }}">{{ $election->titre }} - Voter</a></li>
+                            @if (auth()->user()->role === 'ADMIN')
+                                <li><a class="dropdown-item" href="{{ route('votes.import', $election->id_election) }}">{{ $election->titre }} - Importer votes</a></li>
+                                <li><a class="dropdown-item" href="{{ route('elections.results', $election->id_election) }}">{{ $election->titre }} - Résultats</a></li>
+                                <li><a class="dropdown-item" href="{{ route('elections.export.votes.csv', $election->id_election) }}">{{ $election->titre }} - Exporter CSV</a></li>
+                                <li><a class="dropdown-item" href="{{ route('elections.export.votes.pdf', $election->id_election) }}">{{ $election->titre }} - Exporter PDF</a></li>
+                            @endif
+                        @endforeach
+                    </ul>
+                </div>
             @endif
             <a href="#" onclick="toggleTheme()" class="theme-toggle">
                 <i class="bi bi-moon-stars-fill nav-icon"></i> Mode {{ session('theme', 'dark') == 'dark' ? 'Clair' : 'Sombre' }}
@@ -178,9 +199,11 @@
             <a href="{{ route('login') }}">
                 <i class="bi bi-box-arrow-in-right nav-icon"></i> Connexion
             </a>
-            <a href="{{ route('register') }}">
-                <i class="bi bi-person-plus nav-icon"></i> Inscription
-            </a>
+            @if (Route::has('register'))
+                <a href="{{ route('register') }}">
+                    <i class="bi bi-person-plus nav-icon"></i> Inscription
+                </a>
+            @endif
         @endauth
     </div>
 

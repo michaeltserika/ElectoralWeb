@@ -32,59 +32,14 @@
             background: linear-gradient(135deg, #f5f8fa 0%, #e6ecf0 100%);
             color: #0f1419;
         }
-        .sidebar {
-            width: 280px;
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 100vh;
-            padding: 30px 20px;
-            transition: background-color 0.5s ease, border-color 0.5s ease;
-            border-right: 1px solid rgba(255, 255, 255, 0.1);
-            background: inherit;
-        }
-        .dark-mode .sidebar { background: linear-gradient(180deg, #15202b 0%, #1c2526 100%); }
-        .light-mode .sidebar { background: linear-gradient(180deg, #fff 0%, #f5f8fa 100%); }
-        .sidebar a, .sidebar button {
-            display: flex;
-            align-items: center;
-            padding: 12px 16px;
-            text-decoration: none;
-            border-radius: 25px;
-            margin-bottom: 15px;
-            font-size: 16px;
-            font-weight: 500;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-        .sidebar a::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: rgba(29, 161, 242, 0.1);
-            transform: translateY(-50%);
-            transition: all 0.4s ease;
-            z-index: -1;
-        }
-        .sidebar a:hover::after { left: 0; }
-        .dark-mode .sidebar a, .dark-mode .sidebar button { color: #e7e9ea; }
-        .light-mode .sidebar a, .light-mode .sidebar button { color: #0f1419; }
-        .sidebar a:hover, .sidebar button:hover {
-            color: #1da1f2;
-            transform: translateX(5px);
-        }
         .content {
-            margin-left: 280px;
             max-width: 800px;
             padding: 40px 20px;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
+            margin: 0 auto;
         }
         .dark-mode .card {
             background: rgba(25, 39, 52, 0.9);
@@ -129,8 +84,6 @@
         }
         .dark-mode .text-muted { color: #8899a6 !important; }
         .light-mode .text-muted { color: #657786 !important; }
-        .nav-icon { font-size: 24px; margin-right: 15px; transition: transform 0.3s ease; }
-        .sidebar a:hover .nav-icon { transform: rotate(10deg); }
         .welcome-logo {
             max-width: 100%;
             height: auto;
@@ -167,10 +120,6 @@
             from { opacity: 0; transform: translateY(50px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        @keyframes slideInLeft {
-            from { opacity: 0; transform: translateX(-100px); }
-            to { opacity: 1; transform: translateX(0); }
-        }
         @keyframes zoomIn {
             from { opacity: 0; transform: scale(0.8); }
             to { opacity: 1; transform: scale(1); }
@@ -186,62 +135,16 @@
             to { opacity: 1; transform: translateY(0); }
         }
         @media (max-width: 991.98px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-                border-right: none;
-                border-bottom: 1px solid #38444d;
-                padding: 20px;
-            }
-            .content { margin-left: 0; padding: 20px; }
+            .content { padding: 20px; }
             .welcome-logo { width: 200px; }
             .counter { font-size: 1.5rem; }
         }
     </style>
 </head>
 <body class="{{ session('theme', 'dark') }}-mode">
-    <!-- Barre latérale -->
-    <div class="sidebar slide-in-left">
-        <a href="{{ route('home') }}" class="fw-bold">
-            <i class="bi bi-twitter nav-icon"></i> Élections Sociales
-        </a>
-        @auth
-            <a href="{{ route('dashboard') }}">
-                <i class="bi bi-house-door nav-icon"></i> Tableau de Bord
-            </a>
-            <a href="{{ route('elections.index') }}">
-                <i class="bi bi-list-ul nav-icon"></i> Élections
-            </a>
-            @if (auth()->user()->role === 'ADMIN')
-                <a href="{{ route('elections.create') }}">
-                    <i class="bi bi-plus-square nav-icon"></i> Créer une élection
-                </a>
-            @endif
-            <form action="{{ route('logout') }}" method="POST" class="mt-4">
-                @csrf
-                <button type="submit" class="btn btn-link text-decoration-none w-100 text-start ps-3" style="color: {{ session('theme', 'dark') == 'dark' ? '#e7e9ea' : '#0f1419' }};">
-                    <i class="bi bi-box-arrow-right nav-icon"></i> Déconnexion
-                </button>
-            </form>
-        @else
-            <a href="{{ route('login') }}">
-                <i class="bi bi-box-arrow-in-right nav-icon"></i> Connexion
-            </a>
-            @if (Route::has('register'))
-                <a href="{{ route('register') }}">
-                    <i class="bi bi-person-plus nav-icon"></i> Inscription
-                </a>
-            @endif
-        @endauth
-        <a href="#" onclick="toggleTheme()" class="theme-toggle">
-            <i class="bi bi-moon-stars-fill nav-icon"></i> Mode {{ session('theme', 'dark') == 'dark' ? 'Clair' : 'Sombre' }}
-        </a>
-    </div>
-
     <!-- Contenu principal -->
     <div class="content">
-        <div class="p-4 mb-5 card fade-in-up">
+        <div class="card p-4 mb-5 fade-in-up">
             <h1 class="mb-3 text-center" style="font-weight: 700; font-size: 2.5rem; color: {{ session('theme', 'dark') == 'dark' ? '#e7e9ea' : '#0f1419' }}">
                 <span class="cascade-word" style="animation-delay: 0s;">Découvrez</span>
                 <span class="cascade-word" style="animation-delay: 0.2s;">une</span>
@@ -249,10 +152,10 @@
                 <span class="cascade-word" style="animation-delay: 0.6s;">ère</span>
                 <span class="cascade-word" style="animation-delay: 0.8s;">électorale</span>
             </h1>
-            <p class="mb-4 text-center text-muted" style="font-size: 1.2rem; color: {{ session('theme', 'dark') == 'dark' ? '#8899a6' : '#657786' }}">
+            <p class="text-muted text-center mb-4" style="font-size: 1.2rem; color: {{ session('theme', 'dark') == 'dark' ? '#8899a6' : '#657786' }}">
                 Engagez-vous, votez et interagissez dans une expérience sociale unique.
             </p>
-            <div class="gap-3 d-flex justify-content-center">
+            <div class="d-flex justify-content-center gap-3">
                 @auth
                     <a href="{{ route('dashboard') }}" class="btn btn-primary animate__animated animate__pulse animate__infinite">
                         <i class="bi bi-house-door me-2"></i> Commencer
@@ -267,27 +170,30 @@
                         </a>
                     @endif
                 @endauth
+                <button onclick="toggleTheme()" class="btn btn-outline-light">
+                    <i class="bi bi-moon-stars-fill me-2"></i> Mode {{ session('theme', 'dark') == 'dark' ? 'Clair' : 'Sombre' }}
+                </button>
             </div>
         </div>
 
         <!-- Compteurs animés -->
-        <div class="mb-5 d-flex justify-content-around fade-in-up" style="animation-delay: 0.5s;">
+        <div class="d-flex justify-content-around mb-5 fade-in-up" style="animation-delay: 0.5s;">
             <div class="text-center">
-                <div class="counter" data-target="50">0</div>
+                <div class="counter" data-target="{{ \App\Models\Election::count() }}">0</div>
                 <p class="text-muted" style="color: {{ session('theme', 'dark') == 'dark' ? '#8899a6' : '#657786' }}">Élections</p>
             </div>
             <div class="text-center">
-                <div class="counter" data-target="1200">0</div>
+                <div class="counter" data-target="{{ \App\Models\Vote::count() }}">0</div>
                 <p class="text-muted" style="color: {{ session('theme', 'dark') == 'dark' ? '#8899a6' : '#657786' }}">Votes</p>
             </div>
             <div class="text-center">
-                <div class="counter" data-target="300">0</div>
+                <div class="counter" data-target="{{ \App\Models\Utilisateur::count() }}">0</div>
                 <p class="text-muted" style="color: {{ session('theme', 'dark') == 'dark' ? '#8899a6' : '#657786' }}">Utilisateurs</p>
             </div>
         </div>
 
         <!-- Animation de vote -->
-        <div class="mb-5 voting-animation fade-in-up" style="animation-delay: 1s;">
+        <div class="voting-animation mb-5 fade-in-up" style="animation-delay: 1s;">
             <i class="bi bi-person-fill voter boy"></i>
             <i class="bi bi-person-fill voter girl"></i>
         </div>
@@ -297,7 +203,6 @@
             <svg class="welcome-logo parallax" width="350" height="120" viewBox="0 0 438 104" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path d="M17.2036 -3H0V102.197H49.5189V86.7187H17.2036V-3Z" fill="#1da1f2" />
                 <path d="M110.256 41.6337C108.061 38.1275 104.945 35.3731 100.905 33.3681C96.8667 31.3647 92.8016 30.3618 88.7131 30.3618C83.4247 30.3618 78.5885 31.3389 74.201 33.2923C69.8111 35.2456 66.0474 37.928 62.9059 41.3333C59.7643 44.7401 57.3198 48.6726 55.5754 53.1293C53.8287 57.589 52.9572 62.274 52.9572 67.1813C52.9572 72.1925 53.8287 76.8995 55.5754 81.3069C57.3191 85.7173 59.7636 89.6241 62.9059 93.0293C66.0474 96.4361 69.8119 99.1155 74.201 101.069C78.5885 103.022 83.4247 103.999 88.7131 103.999C92.8016 103.999 96.8667 102.997 100.905 100.994C104.945 98.9911 108.061 96.2359 110.256 92.7282V102.195H126.563V32.1642H110.256V41.6337ZM108.76 75.7472C107.762 78.4531 106.366 80.8078 104.572 82.8112C102.776 84.8161 100.606 86.4183 98.0637 87.6206C95.5202 88.823 92.7004 89.4238 89.6103 89.4238C86.5178 89.4238 83.7252 88.823 81.2324 87.6206C78.7388 86.4183 76.5949 84.8161 74.7998 82.8112C73.004 80.8078 71.6319 78.4531 70.6856 75.7472C69.7356 73.0421 69.2644 70.1868 69.2644 67.1821C69.2644 64.1758 69.7356 61.3205 70.6856 58.6154C71.6319 55.9102 73.004 53.5571 74.7998 51.5522C76.5949 49.5495 78.738 47.9451 81.2324 46.7427C83.7252 45.5404 86.5178 44.9396 89.6103 44.9396C92.7012 44.9396 95.5202 45.5404 98.0637 46.7427C100.606 47.9451 102.776 49.5487 104.572 51.5522C106.367 53.5571 107.762 55.9102 108.76 58.6154C109.756 61.3205 110.256 64.1758 110.256 67.1821C110.256 70.1868 109.756 73.0421 108.76 75.7472Z" fill="#1da1f2" />
-                <!-- Simplifié pour concision -->
             </svg>
         </div>
     </div>
@@ -322,7 +227,7 @@
 
         // Animation au chargement
         document.addEventListener('DOMContentLoaded', () => {
-            const elements = document.querySelectorAll('.fade-in-up, .slide-in-left, .zoom-in');
+            const elements = document.querySelectorAll('.fade-in-up, .zoom-in');
             elements.forEach((el, index) => {
                 el.style.animationDelay = `${index * 0.2}s`;
             });
@@ -330,15 +235,17 @@
             // Compteurs animés
             const counters = document.querySelectorAll('.counter');
             counters.forEach(counter => {
+                const target = parseInt(counter.getAttribute('data-target'));
+                let count = 0;
+                const speed = 2000 / target;
                 const updateCounter = () => {
-                    const target = +counter.getAttribute('data-target');
-                    const count = +counter.innerText;
                     const increment = target / 100;
                     if (count < target) {
-                        counter.innerText = Math.ceil(count + increment);
-                        setTimeout(updateCounter, 20);
+                        count += increment;
+                        counter.textContent = Math.ceil(count);
+                        setTimeout(updateCounter, speed);
                     } else {
-                        counter.innerText = target;
+                        counter.textContent = target;
                     }
                 };
                 updateCounter();

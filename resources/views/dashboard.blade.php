@@ -55,20 +55,44 @@
         @endif
     </div>
 
-    <div class="p-3 card">
-        <h4>Élections disponibles</h4>
-        <ul class="list-group">
-            @foreach ($elections as $election)
-                <li class="list-group-item d-flex justify-content-between align-items-center">
-                    {{ $election->titre }} <small class="text-muted">({{ $election->date_debut }} - {{ $election->date_fin }})</small>
-                    <div>
-                        <a href="{{ route('elections.results', $election->id_election) }}" class="btn btn-outline-light btn-sm me-2">Résultats</a>
-                        <a href="{{ route('votes.create', $election->id_election) }}" class="btn btn-primary btn-sm">Voter</a>
-                    </div>
-                </li>
-            @endforeach
-        </ul>
-    </div>
+            <!-- Section des élections ouvertes -->
+            <div class="p-3 mb-3 card">
+                <h4>Élections disponibles</h4>
+                <ul class="list-group">
+                    @foreach ($openElections as $election)
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            {{ $election->titre }}
+                            <small class="text-muted">({{ $election->date_debut }} - {{ $election->date_fin }})</small>
+                            <div>
+                                <a href="{{ route('elections.results', $election->id_election) }}" class="btn btn-outline-light btn-sm me-2">Résultats</a>
+                                <a href="{{ route('votes.create', $election->id_election) }}" class="btn btn-primary btn-sm">Voter</a>
+                            </div>
+                        </li>
+                    @endforeach
+                </ul>
+            </div>
+
+            <!-- Section des élections clôturées -->
+            @if ($closedElections->isNotEmpty())
+                <div class="p-3 mb-3 card">
+                    <h4>Élections clôturées</h4>
+                    <ul class="list-group">
+                        @foreach ($closedElections as $election)
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                {{ $election->titre }}
+                                <small class="text-muted">({{ $election->date_debut }} - {{ $election->date_fin }})</small>
+                                <div>
+                                    <span class="text-muted">Clôturée</span>
+                                </div>
+                            </li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
         const ctx = document.getElementById('statsChart').getContext('2d');

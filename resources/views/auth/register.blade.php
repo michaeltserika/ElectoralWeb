@@ -1,69 +1,113 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - Plateforme Électorale</title>
 
-@section('title', 'Inscription')
+    <!-- Bootstrap et Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-@section('content')
-    <div class="p-3 card">
+    <!-- Styles personnalisés -->
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            transition: background-color 0.3s, color 0.3s;
+            line-height: 1.6;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .dark-mode {
+            background-color: #15202b;
+            color: #e7e9ea;
+        }
+        .light-mode {
+            background-color: #f5f8fa;
+            color: #0f1419;
+        }
+        .card {
+            max-width: 400px;
+            width: 100%;
+            padding: 20px;
+            border-radius: 15px;
+        }
+        .dark-mode .card {
+            background-color: #192734;
+            border: none;
+            color: #e7e9ea;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+        .light-mode .card {
+            background-color: #fff;
+            border: 1px solid #e6ecf0;
+            color: #0f1419;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        .btn-primary {
+            background-color: #1da1f2;
+            border-color: #1da1f2;
+            border-radius: 25px;
+            padding: 8px 20px;
+            font-weight: bold;
+            transition: background-color 0.2s;
+        }
+        .btn-primary:hover {
+            background-color: #1a91da;
+            border-color: #1a91da;
+        }
+        .form-control {
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="{{ session('theme', 'dark') }}-mode">
+    <div class="card p-3">
         <h2 class="mb-4 text-center"><i class="bi bi-person-plus"></i> Inscription</h2>
         <form method="POST" action="{{ route('register') }}" enctype="multipart/form-data">
             @csrf
             <div class="mb-3">
                 <label for="nom" class="form-label">Nom</label>
-                <input id="nom" type="text" class="form-control @error('nom') is-invalid @enderror" name="nom" value="{{ old('nom') }}" required>
-                @error('nom')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+                <input id="nom" type="text" class="form-control" name="nom" value="{{ old('nom') }}" required>
             </div>
             <div class="mb-3">
                 <label for="email" class="form-label">Email</label>
-                <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required>
-                @error('email')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+                <input id="email" type="email" class="form-control" name="email" value="{{ old('email') }}" required>
             </div>
             <div class="mb-3">
                 <label for="password" class="form-label">Mot de passe</label>
-                <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required>
-                @error('password')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+                <input id="password" type="password" class="form-control" name="password" required>
             </div>
             <div class="mb-3">
                 <label for="password_confirmation" class="form-label">Confirmer le mot de passe</label>
                 <input id="password_confirmation" type="password" class="form-control" name="password_confirmation" required>
             </div>
             <div class="mb-3">
-                <label for="ce_number" class="form-label">Numéro CE (Carte d’Étudiant)</label>
-                <input id="ce_number" type="text" class="form-control @error('ce_number') is-invalid @enderror" name="ce_number" value="{{ old('ce_number') }}">
-                @error('ce_number')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+                <label for="ce_number" class="form-label">Numéro CE</label>
+                <input id="ce_number" type="number" class="form-control" name="ce_number" value="{{ old('ce_number') }}">
             </div>
             <div class="mb-3">
-                <label for="cin_number" class="form-label">Numéro CIN (Carte d’Identité Nationale)</label>
-                <input id="cin_number" type="text" class="form-control @error('cin_number') is-invalid @enderror" name="cin_number" value="{{ old('cin_number') }}">
-                @error('cin_number')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+                <label for="cin_number" class="form-label">Numéro CIN</label>
+                <input id="cin_number" type="number" class="form-control" name="cin_number" value="{{ old('cin_number') }}">
             </div>
             <div class="mb-3">
                 <label for="date_of_birth" class="form-label">Date de naissance</label>
-                <input id="date_of_birth" type="date" class="form-control @error('date_of_birth') is-invalid @enderror" name="date_of_birth" value="{{ old('date_of_birth') }}" required>
-                @error('date_of_birth')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+                <input id="date_of_birth" type="date" class="form-control" name="date_of_birth" value="{{ old('date_of_birth') }}" required>
             </div>
             <div class="mb-3">
                 <label for="image" class="form-label">Photo de profil</label>
-                <input id="image" type="file" class="form-control @error('image') is-invalid @enderror" name="image" accept="image/*">
-                @error('image')
-                    <div class="invalid-feedback">{{ $message }}</div>
-                @enderror
+                <input id="image" type="file" class="form-control" name="image" accept="image/*">
             </div>
-            <div class="gap-2 d-grid">
+            <div class="d-grid gap-2">
                 <button type="submit" class="btn btn-primary">S'inscrire</button>
                 <a href="{{ route('login') }}" class="btn btn-outline-light">Se connecter</a>
             </div>
         </form>
     </div>
-@endsection
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
